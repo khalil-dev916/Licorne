@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# production
+build/
+frontend/build/
+
+# environment variables (passwords!)
+.env
+
+# misc
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
