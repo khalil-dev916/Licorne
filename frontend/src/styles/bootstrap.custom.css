@@ -1,0 +1,22 @@
+/* Personnalisation de Bootstrap - Licorne */
+:root {
+  --licorne-violet: #8b5cf6;
+  --licorne-pink: #ec4899;
+}
+
+.btn-primary {
+  background-color: var(--licorne-violet);
+  border-color: var(--licorne-violet);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #7c3aed;
+  border-color: #7c3aed;
+}
+
+a {
+  color: var(--licorne-violet);
+}
+a:hover {
+  color: var(--licorne-pink);
+}
