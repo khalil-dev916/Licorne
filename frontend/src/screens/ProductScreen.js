@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import axios from 'axios';
 import Rating from '../components/Rating';
+import Loader from '../components/Loader';
 
 const ProductScreen = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const ProductScreen = () => {
   }, [id]);
 
   if (!product || !product._id) {
-    return <h2>Chargement...</h2>;
+    return <Loader />;
   }
 
   return (
