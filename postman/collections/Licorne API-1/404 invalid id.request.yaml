@@ -1,0 +1,5 @@
+$kind: http-request
+description: ""
+url: "{{baseURL}}/api/products/notanid"
+method: GET
+order: 1002

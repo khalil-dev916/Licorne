@@ -1,0 +1,5 @@
+$kind: http-request
+description: ""
+url: "{{baseURL}}/api/toto"
+method: GET
+order: 1001
