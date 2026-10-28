@@ -1,0 +1,4 @@
+name: Licorne env
+values:
+  - key: baseURL
+    value: 'http://localhost:5000'
