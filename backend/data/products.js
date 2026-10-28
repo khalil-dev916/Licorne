@@ -1,6 +1,5 @@
 const products = [
   {
-    _id: '1',
     name: 'Licorne arc-en-ciel en peluche',
     image: '/images/licorne-peluche.jpg',
     description:
@@ -13,7 +12,6 @@ const products = [
     numReviews: 12,
   },
   {
-    _id: '2',
     name: 'Mug magique Licorne',
     image: '/images/mug-licorne.jpg',
     description:
@@ -26,7 +24,6 @@ const products = [
     numReviews: 8,
   },
   {
-    _id: '3',
     name: 'T-shirt Licorne premium',
     image: '/images/tshirt-licorne.jpg',
     description:
@@ -39,7 +36,6 @@ const products = [
     numReviews: 19,
   },
   {
-    _id: '4',
     name: 'Sac a dos Licorne',
     image: '/images/sac-a-dos-licorne.jpg',
     description:
@@ -52,7 +48,6 @@ const products = [
     numReviews: 6,
   },
   {
-    _id: '5',
     name: 'Coussin Licorne moelleux',
     image: '/images/coussin-licorne.jpg',
     description:
@@ -65,7 +60,6 @@ const products = [
     numReviews: 25,
   },
   {
-    _id: '6',
     name: 'Bandeau a licorne',
     image: '/images/bandeau-licorne.jpg',
     description:
@@ -78,7 +72,6 @@ const products = [
     numReviews: 4,
   },
   {
-    _id: '7',
     name: 'Bonnet Licorne douillet',
     image: '/images/bonnet-licorne.jpg',
     description:
@@ -91,7 +84,6 @@ const products = [
     numReviews: 10,
   },
   {
-    _id: '8',
     name: 'Stickers Licorne (x20)',
     image: '/images/stickers-licorne.jpg',
     description:
