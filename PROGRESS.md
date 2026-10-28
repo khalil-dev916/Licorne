@@ -1,52 +1,57 @@
 # Projet React "Licorne" — Progress (cours MERN / GLSI)
 
-> Fichier de reprise : tout nouveau session OpenCode (ou autre) doit lire ceci pour continuer.
-> **État : frontend COMPLET (p.7–49) + backend jusqu'à p.78 (connecté à Atlas).**
-> **▶️ Prochaine étape : p.79–91 — les 3 modèles Mongoose** (`backend/models/` : productModel, userModel, orderModel — le code à coller est dans la session OpenCode de référence, sinon le recréer façon ProShop).
+> Fichier de reprise : toute nouvelle session OpenCode (ou autre) doit lire ceci pour continuer.
+> **État : frontend p.7–138 COMPLET + backend p.52–118 COMPLET (MVC + erreurs + données dans Atlas).**
+> **▶️ Prochaine étape : p.139–146 — DERNIERE ligne de code : `getProductDetails` dans productsApiSlice + ProductScreen migré sur RTK Query (fin de axios partout).** Ensuite p.147 = "Fin du cours" → bilan final + commit + mise à jour de ce fichier.
 
 ## ✅ Terminé
 
 ### Environnement (vérifié + installé)
-- Node v24.19 / npm 11.17 ; VS Code + 4 extensions (ES7 React snippets, ES6 snippets, Prettier, Auto Rename Tag)
-- Git for Windows 2.56 (Git Bash), Postman, MongoDB Compass
-- Chrome : React DevTools + Redux DevTools (valider par clic "Add to Chrome" si pas fait)
-- Git configuré : `khalil-dev916`
+- Node v24.19 / npm 11.17 ; VS Code + 4 extensions ; Git ; Postman ; MongoDB Compass ; Chrome React/Redux DevTools
+- Git configuré : `khalil-dev916` ; **habitude de commit validée** (l'utilisateur commit/push lui-même à chaque chapitre)
 
 ### MongoDB Atlas
-- Projet **Licorne**, cluster **licorne0** (free M0), base **licorne**, collection **products** (vide — le seeder la remplit, p.92–100)
-- `MONGO_URI` complet dans **`.env`** (jamais committé — testé + fonctionnel)
-- **Connecté depuis l'app** : `MongoDB Connected: ac-ebjh6az-shard-00-02.gdntgnk.mongodb.net` ✅ (p.78)
+- Projet **Licorne**, cluster **licorne0**, base **licorne** ; `MONGO_URI` dans `.env` (jamais committé)
+- **Seeder exécuté** : `licorne.products` = 8 docs, `licorne.users` = 2 docs (admin@licorne.com / khalil@licorne.com, pw hashés `$2b$10$...`, passwords 123456)
+- ⚠️ **Fix appliqué** (`45d5d38`) : `User.insertMany()` ne déclenche PAS le hook `pre('save')` → le seeder hash manuellement via `bcrypt.hash()` avant insertion. Ne pas retirer.
+
+### Backend (`backend/`, racine, port 5000) — p.52–118 COMPLET
+- Models : `models/productModel.js` (reviewSchema inclus), `userModel.js` (hook bcrypt + matchPassword), `orderModel.js`
+- Seeder : `data/products.js` (sans `_id`), `data/users.js`, `seeder.js` ; scripts `data:import` / `data:destroy`
+- **MVC** : `routes/productRoutes.js` → `controllers/productController.js` (asyncHandler, requêtes mongoose find/findById) → `utils/asyncHandler.js` ; `server.js` = dotenv + connectDB + `app.use('/api/products', routes)`
+- **Erreurs** : `middleware/errorMiddleware.js` (notFound + errorHandler, CastError → 404, stack masqué en prod) branché en bas de server.js
+- Scripts racine : start, server (nodemon), client, dev, data:import, data:destroy ; **lancement : `npm run dev`** (front 3000 + back 5000)
+
+### Postman (p.101–118) — sauvegardé dans `postman/` (committé, extension VS Code)
+- Workspace Licorne ; env **`Licorne env`** avec `baseURL=http://localhost:5000` (TICKET : valeur vide un moment — vérifier qu'elle est renseignée et sélectionnée en haut à droite)
+- Collection **`Licorne API`** = 5 requêtes : Get All Products, Get Single Product (`/1` → 404 normal), Get Product By ObjectId, 404 unknown route (`/api/toto`), 404 invalid id (`notanid`)
+- Fichiers `.request.yaml` modifiables côté disque → **Ctrl+Shift+P → Reload Window** après édition externe
+
+### Frontend (`frontend/`, CRA, port 3000) — p.7–138 COMPLET
+- Base : App/Router/Header/Footer/Product/Rating/Logo/styles ; `src/products.js` supprimé (données = API)
+- **Redux (p.119–138)** : `npm i @reduxjs/toolkit react-redux` (PDF écrit "tooslkit" = faute) ; `src/store.js` (configureStore + apiSlice reducer/middleware) ; `Provider` dans `index.js` ; `src/constants.js` (BASE_URL='', PRODUCTS_URL='/api/products', USERS_URL, ORDERS_URL) ; `src/slices/apiSlice.js` (createApi parent, tagTypes) ; `src/slices/productsApiSlice.js` (getProducts, keepUnusedDataFor:5, export useGetProductsQuery)
+- Composants : `components/Loader.js` (Spinner), `components/Message.js` (Alert, default param variant='info')
+- **HomeScreen = 100 % RTK Query** (axios/useState/useEffect retirés) ; ProductScreen = axios encore, mais Loader au lieu de "Chargement..."
+- Test validé : chaîne `localhost:3000 → proxy → 5000 → Atlas` = 200 + 8 produits ; onglet Redux DevTools montre `api.queries["getProducts"]`
 
 ### Git / GitHub
-- Repo **https://github.com/khalil-dev916/Licorne** (privé), arbre de travail **propre**
-- Historique : initial commit → (1) frontend p.17-24 → (2) frontend p.26-69 → (3) backend p.52-63 → (4) env template + notes
-- `.env` ignoré ; `example.env` committé (template, p.74)
-- **Habitude** : à chaque bloc terminé → `git add .` + `git commit -m "..."` + `git push` (ou panneau Source Control de VS Code)
+- Repo **https://github.com/khalil-dev916/Licorne** (privé), arbre propre, dernier commit `a20ed4a1`
+- Historique chapitre par chapitre : models → seeder → fix hash → postman → mvc → error middleware → redux foundation → productsApiSlice
+- `.env` ignoré ; `example.env` committé
 
-### Frontend (`frontend/`, CRA, port 3000) — p.7 à p.49 COMPLET
-- App créée (rfce), GitHub, Header/Footer + logo généré (`src/assets/logo.png`), styles custom (`src/styles/`)
-- Données produits générées : `public/images/*.jpg` (8) — `src/products.js` **supprimé** (p.69 : les données viennent de l'API)
-- Grille produits (`screens/HomeScreen.js`), carte + étoiles (`components/Product.js`, `Rating.js`)
-- React Router (routes `/` et `/product/:id`, Link + LinkContainer), page détail (`screens/ProductScreen.js`)
-- axios + **proxy** (`frontend/package.json` → `"proxy": "http://localhost:5000"`) : HomeScreen/ProductScreen fetchent l'API
+## ▶️ À faire — ordre du cours (RESTE : 1 bloc de code + bilan)
+1. **p.139–146 : ProductScreen sur Redux** :
+   - `frontend/src/slices/productsApiSlice.js` → ajouter endpoint `getProductDetails: builder.query({ query: (productId) => `${PRODUCTS_URL}/${productId}` })` + exporter aussi `useGetProductDetailsQuery`
+   - `frontend/src/screens/ProductScreen.js` → réécrire : retirer axios/useState/useEffect, faire `const { data: product, isLoading, error } = useGetProductDetailsQuery(id)` ; isLoading → `<Loader/>`, error → `<Message variant='danger'>{error?.data?.message || error.error}</Message>`, garder le reste du JSX (Link Retour, Row/Col, Rating, Card, bouton stock)
+   - Tester : liste + détail + cas 404 (mauvais id) ; vérifier F12 → Redux → api.queries
+   - Commit : `frontend: product screen via RTK Query, axios fully retired (p.139-146)`
+2. **p.147 — Fin du cours** : commit final, bilan complet (toutes les parties du PDF faites), mettre à jour ce fichier (état = TERMINÉ), pousser.
+3. (Optionnel suite terrain : panier/users/orders/Redux avancé — hors PDF, le cours s'arrête à p.147)
 
-### Backend (`backend/`, racine du projet, port 5000) — p.52 à p.78 COMPLET
-- `npm init` racine + `"type": "module"` ; scripts : `start`, `server` (nodemon), `client`, `dev` (concurrently)
-- `backend/server.js` : dotenv → routes `/`, `/api/products`, `/api/products/:id`
-- `.env` (NODE_ENV, PORT, MONGO_URI) + `example.env` (template, p.74)
-- `npm i mongoose` + `backend/config/db.js` (connectDB) branché dans server.js ✅
-- **Lancer l'app : `npm run dev` à la racine** (front 3000 + back 5000 ensemble)
-
-## ▶️ À faire — ordre du cours
-1. **p.79–91 : modèles** — créer `backend/models/` : `productModel.js`, `userModel.js` (bcryptjs hook pre-save + matchPassword), `orderModel.js`
-2. **p.92–100 : seeder** — retirer les `_id` de `backend/data/products.js`, `npm i bcryptjs colors`, créer `backend/data/users.js` + `backend/seeder.js`, scripts `data:import`/`data:destroy` dans package.json racine, exécuter → vérifier dans Compass/Atlas que `licorne.products` a 8 docs et `users` 2 docs
-3. **p.101–118 : Postman** — workspace Licorne, env `baseURL`, routes testées ; extraire routes → `routes/productRoutes.js`, middleware `asyncHandler.js` + `errorMiddleware.js`, contrôleur `productController.js`
-4. **p.119+ : Redux** — `@reduxjs/toolkit` + `react-redux`, `store.js`, `slices/apiSlice.js` + `productsApiSlice.js`, Loader/Message, remplacer axios par RTK Query
-5. (Fin du plan : faire communiquer front/back via Redux — le PDF va jusqu'à p.147)
-
-## ⚙️ Notes / pièges
-- Redémarrer les serveurs demain : `npm run dev` (racine). `Ctrl+C` = arrêter quand le PDF dit *arrêter le serveur*
-- Erreurs déjà rencontrés et réglés : `.gitignore` racine sans `/` devant node_modules ; `"type"` dupliqué dans package.json ; fichiers créés dans `frontend/` au lieu de la racine (toujours vérifier le dossier surligné dans l'Explorer)
-- CRA déprécié mais OK ; fallback Vite si besoin ; warnings npm audit = bruit
-- Images/logo **générés** (pas les vrais fichiers du cours) ; Connexion string aussi dans le Notepad de l'utilisateur
-- Session OpenCode de référence : **« React MERN course - Licorne (soa): env + frontend p.7-49 done »** → `/sessions` ou `Ctrl+O` pour la reprendre avec tout le contexte (code des modèles dedans)
+## ⚙️ Notes / pièges rencontrés
+- **Méthode PDF** : texte extrait via PyPDF2 (`C:\Users\khali\Downloads\pratique_React_GLSI_unlocked.pdf`), pages en 0-based ; les captures sont illisibles → on recrée le code équivalent façon ProShop
+- Fichiers créés au mauvais endroit (2× : `server.js` dans frontend, `constants.js` dans `frontend/` au lieu de `frontend/src/`) → **TOUJOURS vérifier le dossier surligné / le breadcrumb avant Ctrl+S**
+- Interrogations à vide pendant un redémarrage `npm run dev` → 404 transitoire ; retester après compilation
+- `insertMany` ignore `pre('save')` (voir fix seeder) ; CRA déprécié mais OK ; warnings npm audit = bruit
+- Lancement : `npm run dev` à la racine ; `Ctrl+C` = arrêter
+- Session OpenCode de référence : historique complet dans `/sessions` (Ctrl+O)
